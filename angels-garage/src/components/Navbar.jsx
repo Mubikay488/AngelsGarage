@@ -42,8 +42,8 @@ const Navbar = () => {
         >
           <ul className="lg:flex space-y-4 lg:space-y-0 lg:space-x-6 mt-4 lg:mt-0 p-6 lg:p-0 items-center font-semibold">
             <li><a href="/" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Home</a></li>
-            <li><a href="/carlisting" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Buy</a></li>
-            <li><a href="#" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Sell</a></li>
+            <li><a href="/buy" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Buy</a></li>
+            <li><a href="/sell" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Sell</a></li>
             <li><a href="/contact" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Contact</a></li>
           </ul>
         </div>

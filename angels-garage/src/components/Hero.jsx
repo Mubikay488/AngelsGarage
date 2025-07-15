@@ -57,7 +57,7 @@ function Hero() {
                                     }}
                                     className="z-0"
                                 >
-                                    <div className='absolute inset-0 bg-black-900 opacity-40'></div>
+                                    <div className='absolute inset-0 bg-black-900 opacity-20'></div>
                                     {/* Amber shadow at bottom */}
                                     <div className="absolute left-0 right-0 bottom-0 h-32 bg-gradient-to-t from-amber-950 to-transparent shadow-3xl"></div>
                                 </motion.div>
@@ -73,7 +73,7 @@ function Hero() {
                     <AnimatePresence mode="wait">
                     <motion.div key={slideIndex}
                     initial={{ opacity: 0, y:30}} animate={{ opacity: 1,  y:0}} exit={{ opacity: 0, y:30 }} transition={{duration:0.6 , delay:0.2}}>
-                        <a href="/carlisting" className='bg-white inline-flex justify-center items-center p-2  rounded-full gap-10 pl-4'>
+                        <a href="/buy" className='bg-white inline-flex justify-center items-center p-2  rounded-full gap-10 pl-4'>
                         <span className='text-xl font-semibold'>Browse Cars</span>
                         <span className='bg-amber-900 p-4 text-white rounded-full'><FaArrowRight /></span>
                     </a>
@@ -81,8 +81,8 @@ function Hero() {
                     </AnimatePresence>
                     {/* Buy and Sell Buttons */}
                     <div className="flex justify-center relative gap-8 mt-16">
-                      <a href="/carlisting" className="px-8 py-4 bg-white text-black font-bold rounded-2xl shadow-lg hover:bg-amber-950 transition-colors duration-300 text-xl">Buy</a>
-                      <a href="#" className="px-8 py-4 bg-white text-black font-bold rounded-2xl shadow-lg hover:bg-amber-200 transition-colors duration-300 text-xl">Sell</a>
+                      <a href="/buy" className="px-8 py-4 bg-white text-black font-bold rounded-2xl shadow-lg hover:bg-amber-950 transition-colors duration-300 text-xl">Buy</a>
+                      <a href="/sell" className="px-8 py-4 bg-white text-black font-bold rounded-2xl shadow-lg hover:bg-amber-200 transition-colors duration-300 text-xl">Sell</a>
                     </div>
                 </div>
             </section>
