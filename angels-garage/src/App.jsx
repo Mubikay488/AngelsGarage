@@ -1,6 +1,5 @@
 import './App.css'
 import CarListing from './components/CarListing'
-import Secondbar from './components/Secondbar'
 import Hero from './components/Hero'
 import Navbar from './components/Navbar'
 import Contact  from './components/Contact'

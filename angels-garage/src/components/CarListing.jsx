@@ -30,6 +30,36 @@ const carsForSale = [
 		image: "/src/assets/images/image 3.jpg",
 		description: "2020 model, sporty, like new.",
 		brand: "Ford",
+		model: "Jump off",
+		year: 2020,
+	},
+	{
+		id: 4,
+		name: "Ford Mustang",
+		price: "GH₵22,000",
+		image: "/src/assets/images/image 4.jpg",
+		description: "2020 model, sporty, like new.",
+		brand: "Ford",
+		model: "Mustang",
+		year: 2020,
+	},
+	{
+		id: 5,
+		name: "Ford Mustang",
+		price: "GH₵22,000",
+		image: "/src/assets/images/image 5.jpg",
+		description: "2020 model, sporty, like new.",
+		brand: "Ford",
+		model: "Mustang",
+		year: 2020,
+	},
+	{
+		id: 6,
+		name: "Ford Mustang",
+		price: "GH₵22,000",
+		image: "/src/assets/images/image 6.jpg",
+		description: "2020 model, sporty, like new.",
+		brand: "Ford",
 		model: "Mustang",
 		year: 2020,
 	},
@@ -56,12 +86,14 @@ const CarListing = () => {
 
 	return (
 		<div>
-			<Navbar />
+			<Navbar /> 
+      <br />
+      <br />
 			<div className="container mx-auto py-8">
+        <br />
 				<h1 className="text-3xl font-bold mb-6 text-center">
 					Welcome to Angels Garage
 				</h1>
-				<h2 className="text-2xl font-semibold mb-4">Cars for Sale</h2>
 				<div className="flex justify-center mb-8">
 					<input
 						type="text"
