@@ -6,8 +6,11 @@ const Navbar = () => {
   return (
     <nav className="bg-amber-950 text-white p-4 fixed  top-0 left-0 w-full z-50 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-xl font-bold">
-             <img className="size-15" src="/src/assets/images/AngelsGarage logo.png" alt="AngelsGarage Logo" />
+        <div className="flex items-center gap-3">
+          <a href="/" aria-label="Go to homepage" className="flex items-center gap-3">
+            <img className="size-12 md:size-15 cursor-pointer" src="/src/assets/images/AngelsGarage logo.png" alt="AngelsGarage Logo" />
+            <span className="text-lg md:text-2xl font-bold whitespace-nowrap">AngelsGarage Ghana</span>
+          </a>
         </div>
         {/* Hamburger icon for mobile */}
         <button
