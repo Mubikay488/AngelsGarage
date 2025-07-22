@@ -134,7 +134,8 @@ const SellForm = () => {
               </div>
               <button
                 type="submit"
-                className="w-full py-2 bg-amber-950 text-white rounded hover:bg-amber-700 font-semibold"
+                className="w-full py-2 text-white rounded font-semibold"
+                style={{ backgroundColor: '#3B1220' }}
               >
                 Submit for Review
               </button>

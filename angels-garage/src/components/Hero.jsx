@@ -51,9 +51,9 @@ function Hero() {
                         >
                             <div className='absolute inset-0 bg-black-900 opacity-20'></div>
                             {/* Amber shadow at bottom */}
-                            <div className="absolute left-0 right-0 bottom-0 h-32 bg-gradient-to-t from-amber-950 to-transparent shadow-3xl"></div>
+                            <div className="absolute left-0 right-0 bottom-0 h-32 bg-gradient-to-t" style={{ background: 'linear-gradient(to top, #3B1220, transparent)' }}></div>
                             {/* Amber shadow at left */}
-                            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-amber-950 to-transparent"></div>
+                            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r" style={{ background: 'linear-gradient(to right, #3B1220, transparent)' }}></div>
                         </motion.div>
                     </AnimatePresence>
                 </div>
@@ -62,7 +62,7 @@ function Hero() {
                     <p className='text-sm md:text-xl text-white text-center mb-8 max-w-2xl'>Looking to buy or sell a car? We can help you make the best deals as your trusted agent</p>
                     {/* Buy and Sell Buttons */}
                     <div className="flex justify-center relative gap-8 mt-2">
-                      <a href="/buy" className="px-8 py-4 bg-white text-black font-bold rounded-2xl shadow-lg hover:bg-amber-950 transition-colors duration-300 text-xl">Buy</a>
+                      <a href="/buy" className="px-8 py-4 bg-white text-black font-bold rounded-2xl shadow-lg transition-colors duration-300 text-xl" style={{ borderColor: '#3B1220' }}>Buy</a>
                       <a href="/sell" className="px-8 py-4 bg-white text-black font-bold rounded-2xl shadow-lg hover:bg-amber-200 transition-colors duration-300 text-xl">Sell</a>
                     </div>
                 </div>
