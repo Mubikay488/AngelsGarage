@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { FaArrowRight } from 'react-icons/fa';
 import {motion, AnimatePresence} from "framer-motion";
 import image1 from "../assets/images/back1.png"
 import image2 from "../assets/images/back2.png"

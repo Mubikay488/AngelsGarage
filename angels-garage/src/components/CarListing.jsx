@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
+import Image1 from "../assets/images/image 1.jpg";
+import Image2 from "../assets/images/image 2.jpg";
+import Image3 from "../assets/images/image 3.jpg";
+import Image4 from "../assets/images/image 4.jpg";
+import Image5 from "../assets/images/image 5.jpg";
+import Image6 from "../assets/images/image 6.jpg";	
+
+
 
 const carsForSale = [
 	{
 		id: 1,
 		name: "Toyota Camry",
 		price: "GH₵12,000",
-		image: "/src/assets/images/image 1.jpg",
+		image: Image1,
 		description: "2018 model, low mileage, excellent condition.",
 		brand: "Toyota",
 		model: "Camry",
@@ -17,7 +25,7 @@ const carsForSale = [
 		id: 2,
 		name: "Honda Accord",
 		price: "GH₵10,500",
-		image: "/src/assets/images/image 2.jpg",
+		image: Image2,
 		description: "2017 model, well maintained, single owner.",
 		brand: "Honda",
 		model: "Accord",
@@ -27,7 +35,7 @@ const carsForSale = [
 		id: 3,
 		name: "Ford Mustang",
 		price: "GH₵22,000",
-		image: "/src/assets/images/image 3.jpg",
+		image: Image3,
 		description: "2020 model, sporty, like new.",
 		brand: "Ford",
 		model: "Jump off",
@@ -37,7 +45,7 @@ const carsForSale = [
 		id: 4,
 		name: "Ford Mustang",
 		price: "GH₵22,000",
-		image: "/src/assets/images/image 4.jpg",
+		image: Image4,
 		description: "2020 model, sporty, like new.",
 		brand: "Ford",
 		model: "Mustang",
@@ -47,7 +55,7 @@ const carsForSale = [
 		id: 5,
 		name: "Ford Mustang",
 		price: "GH₵22,000",
-		image: "/src/assets/images/image 5.jpg",
+		image: Image5,
 		description: "2020 model, sporty, like new.",
 		brand: "Ford",
 		model: "Mustang",
@@ -57,7 +65,7 @@ const carsForSale = [
 		id: 6,
 		name: "Ford Mustang",
 		price: "GH₵22,000",
-		image: "/src/assets/images/image 6.jpg",
+		image: Image6,
 		description: "2020 model, sporty, like new.",
 		brand: "Ford",
 		model: "Mustang",

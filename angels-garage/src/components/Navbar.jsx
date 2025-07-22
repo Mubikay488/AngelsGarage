@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import Logo from '../assets/images/AngelsGarage logo.png';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -8,7 +8,7 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center gap-3">
           <a href="/" aria-label="Go to homepage" className="flex items-center gap-3">
-            <img className="size-12 md:size-15 cursor-pointer" src="/src/assets/images/AngelsGarage logo.png" alt="AngelsGarage Logo" />
+            <img className="size-12 md:size-15 cursor-pointer" src={Logo} alt="AngelsGarage Logo" />
             <span className="text-lg md:text-2xl font-bold whitespace-nowrap">AngelsGarage Ghana</span>
           </a>
         </div>
