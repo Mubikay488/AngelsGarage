@@ -26,7 +26,15 @@ const SellForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would send the form data to the admin/backend
+    // Save to localStorage for admin review
+    const pendingCars = JSON.parse(localStorage.getItem('pendingCars') || '[]');
+    const carData = {
+      ...form,
+      id: Date.now(),
+      image: form.image ? URL.createObjectURL(form.image) : null,
+    };
+    pendingCars.push(carData);
+    localStorage.setItem('pendingCars', JSON.stringify(pendingCars));
     setSubmitted(true);
   };
 

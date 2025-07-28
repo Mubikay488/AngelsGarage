@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Image1 from "../assets/images/image1.jpg";
@@ -10,86 +10,41 @@ import Image6 from "../assets/images/image6.jpg";
 
 
 
-const carsForSale = [
-	{
-		id: 1,
-		name: "Toyota Camry",
-		price: "GH₵12,000",
-		image: Image1,
-		description: "2018 model, low mileage, excellent condition.",
-		brand: "Toyota",
-		model: "Camry",
-		year: 2018,
-	},
-	{
-		id: 2,
-		name: "Honda Accord",
-		price: "GH₵10,500",
-		image: Image2,
-		description: "2017 model, well maintained, single owner.",
-		brand: "Honda",
-		model: "Accord",
-		year: 2017,
-	},
-	{
-		id: 3,
-		name: "Ford Mustang",
-		price: "GH₵22,000",
-		image: Image3,
-		description: "2020 model, sporty, like new.",
-		brand: "Ford",
-		model: "Mustang",
-		year: 2020,
-	},
-	{
-		id: 4,
-		name: "Ford Mustang",
-		price: "GH₵22,000",
-		image: Image4,
-		description: "2020 model, sporty, like new.",
-		brand: "Ford",
-		model: "Mustang",
-		year: 2020,
-	},
-	{
-		id: 5,
-		name: "Ford Mustang",
-		price: "GH₵22,000",
-		image: Image5,
-		description: "2020 model, sporty, like new.",
-		brand: "Ford",
-		model: "Mustang",
-		year: 2020,
-	},
-	{
-		id: 6,
-		name: "Ford Mustang",
-		price: "GH₵22,000",
-		image: Image6,
-		description: "2020 model, sporty, like new.",
-		brand: "Ford",
-		model: "Mustang",
-		year: 2020,
-	},
-];
+// Get cars from localStorage (approved by admin)
+const getApprovedCars = () => {
+	return JSON.parse(localStorage.getItem('approvedCars') || '[]');
+};
 
 const CarListing = () => {
 	const [search, setSearch] = useState("");
-	const [filteredCars, setFilteredCars] = useState(carsForSale);
+	const [filteredCars, setFilteredCars] = useState(getApprovedCars());
 	const navigate = useNavigate();
+
+	// Sync with localStorage changes (e.g., after admin approves/removes cars)
+	useEffect(() => {
+		const handleStorage = () => {
+			setFilteredCars(getApprovedCars().filter((car) =>
+				car.name.toLowerCase().includes(search) ||
+				car.brand.toLowerCase().includes(search) ||
+				car.model.toLowerCase().includes(search) ||
+				car.price.toLowerCase().includes(search) ||
+				car.year.toString().includes(search)
+			));
+		};
+		window.addEventListener('storage', handleStorage);
+		return () => window.removeEventListener('storage', handleStorage);
+	}, [search]);
 
 	const handleSearch = (e) => {
 		const value = e.target.value.toLowerCase();
 		setSearch(value);
-		setFilteredCars(
-			carsForSale.filter((car) =>
-				car.name.toLowerCase().includes(value) ||
-				car.brand.toLowerCase().includes(value) ||
-				car.model.toLowerCase().includes(value) ||
-				car.price.toLowerCase().includes(value) ||
-				car.year.toString().includes(value)
-			)
-		);
+		setFilteredCars(getApprovedCars().filter((car) =>
+			car.name.toLowerCase().includes(value) ||
+			car.brand.toLowerCase().includes(value) ||
+			car.model.toLowerCase().includes(value) ||
+			car.price.toLowerCase().includes(value) ||
+			car.year.toString().includes(value)
+		));
 	};
 
 	return (

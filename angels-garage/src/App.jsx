@@ -5,18 +5,20 @@ import Navbar from './components/Navbar'
 import Contact  from './components/Contact'
 import SellForm from './components/SellForm'
 import Home from './components/Home'
+import AdminPage from './components/AdminPage'
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/hero" element={<Hero />} />
-        <Route path="/buy" element={<CarListing />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/sell" element={<SellForm />} />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/hero" element={<Hero />} />
+                <Route path="/buy" element={<CarListing />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/sell" element={<SellForm />} />
+                <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </Router>
   )

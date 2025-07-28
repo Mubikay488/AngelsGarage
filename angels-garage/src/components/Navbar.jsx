@@ -3,13 +3,17 @@ import Logo from '../assets/images/angelsgaragelogo.png';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleAdminLogin = () => {
+    localStorage.setItem("isAdmin", "true");
+    window.location.reload();
+  };
   return (
     <nav className="text-white p-4 fixed top-0 left-0 w-full z-50 shadow-lg" style={{ backgroundColor: '#3B1220' }}>
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center gap-3">
           <a href="/" aria-label="Go to homepage" className="flex items-center gap-3">
             <img className="size-12 md:size-15 cursor-pointer" src={Logo} alt="AngelsGarage Logo" />
-            <span className="text-lg md:text-2xl font-bold whitespace-nowrap">AngelsGarage Ghana</span>
+            <span className="text-lg md:text-2xl font-bold whitespace-nowrap">AngelsGarageGhana</span>
           </a>
         </div>
         {/* Hamburger icon for mobile */}
@@ -50,8 +54,33 @@ const Navbar = () => {
             <li><a href="/buy" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Buy</a></li>
             <li><a href="/sell" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Sell</a></li>
             <li><a href="/contact" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Contact</a></li>
+            {localStorage.getItem("isAdmin") === "true" && (
+              <li>
+                <a href="/admin" className="px-7 py-3 hover:bg-white hover:text-[#3B1220] transition-colors duration-500 rounded-full font-bold" onClick={() => setIsOpen(false)}>
+                  Admin Dashboard
+                </a>
+              </li>
+            )}
+            <li>
+              {localStorage.getItem("isAdmin") === "true" ? (
+                <button
+                  onClick={() => { localStorage.removeItem("isAdmin"); window.location.reload(); }}
+                  className="px-7 py-3 bg-[#3B1220] border border-white text-white rounded-full font-bold hover:bg-white hover:text-[#3B1220] transition-colors duration-300 w-full text-left"
+                >
+                  Admin Logout
+                </button>
+              ) : (
+                <button
+                  onClick={handleAdminLogin}
+                  className="px-7 py-3 bg-[#3B1220] border border-white text-white rounded-full font-bold hover:bg-white hover:text-[#3B1220] transition-colors duration-300 w-full text-left"
+                >
+                  Admin Login
+                </button>
+              )}
+            </li>
           </ul>
         </div>
+        {/* Admin Login Button moved into nav links */}
         {/* Backdrop for mobile menu */}
         {isOpen && (
           <div
