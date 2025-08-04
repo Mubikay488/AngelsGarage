@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import Logo from '../assets/images/angelsgaragelogo.png';
-const Navbar = () => {
+import { useNavigate } from 'react-router-dom';
+function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const isAdmin = localStorage.getItem("isAdmin") === "true";
+  const isSeller = localStorage.getItem("isSeller") === "true";
 
-  const handleAdminLogin = () => {
-    localStorage.setItem("isAdmin", "true");
-    window.location.reload();
+  const handleSignOut = () => {
+    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("isSeller");
+    localStorage.removeItem("sellerUsername");
+    localStorage.removeItem("sellerPassword");
+    navigate("/signin");
+    setIsOpen(false);
   };
+
   return (
     <nav className="text-white p-4 fixed top-0 left-0 w-full z-50 shadow-lg" style={{ backgroundColor: '#3B1220' }}>
       <div className="container mx-auto flex justify-between items-center">
@@ -54,30 +63,25 @@ const Navbar = () => {
             <li><a href="/buy" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Buy</a></li>
             <li><a href="/sell" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Sell</a></li>
             <li><a href="/contact" className="px-7 py-3 hover:bg-white hover:text-gray-600 transition-colors duration-500 rounded-full" onClick={() => setIsOpen(false)}>Contact</a></li>
-            {localStorage.getItem("isAdmin") === "true" && (
+            {!(isAdmin || isSeller) ? (
+              <li><a href="/signin" className="px-7 py-3 hover:bg-white hover:text-[#3B1220] transition-colors duration-500 rounded-full font-bold" onClick={() => setIsOpen(false)}>Sign In</a></li>
+            ) : (
+              <li>
+                <button
+                  className="px-7 py-3 hover:bg-white hover:text-[#3B1220] transition-colors duration-500 rounded-full font-bold"
+                  onClick={handleSignOut}
+                >
+                  Sign Out
+                </button>
+              </li>
+            )}
+            {localStorage.getItem("isAdmin") === "true" ? (
               <li>
                 <a href="/admin" className="px-7 py-3 hover:bg-white hover:text-[#3B1220] transition-colors duration-500 rounded-full font-bold" onClick={() => setIsOpen(false)}>
                   Admin Dashboard
                 </a>
               </li>
-            )}
-            <li>
-              {localStorage.getItem("isAdmin") === "true" ? (
-                <button
-                  onClick={() => { localStorage.removeItem("isAdmin"); window.location.reload(); }}
-                  className="px-7 py-3 bg-[#3B1220] border border-white text-white rounded-full font-bold hover:bg-white hover:text-[#3B1220] transition-colors duration-300 w-full text-left"
-                >
-                  Admin Logout
-                </button>
-              ) : (
-                <button
-                  onClick={handleAdminLogin}
-                  className="px-7 py-3 bg-[#3B1220] border border-white text-white rounded-full font-bold hover:bg-white hover:text-[#3B1220] transition-colors duration-300 w-full text-left"
-                >
-                  Admin Login
-                </button>
-              )}
-            </li>
+            ) : null}
           </ul>
         </div>
         {/* Admin Login Button moved into nav links */}
@@ -92,5 +96,6 @@ const Navbar = () => {
     </nav>
   );
 };
+
 
 export default Navbar;
