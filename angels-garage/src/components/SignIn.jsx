@@ -1,3 +1,6 @@
+import React, { useState } from "react";
+import Navbar from "./Navbar";
+import { useNavigate } from "react-router-dom";
 
 const ADMIN_CREDENTIALS = {
   username: "Mubarak",
@@ -7,7 +10,13 @@ const ADMIN_CREDENTIALS = {
 const SignIn = () => {
   const [role, setRole] = useState("");
   const [sellerMode, setSellerMode] = useState("signin"); // 'signin' or 'register'
-  const [form, setForm] = useState({ username: "", password: "" });
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    username: "",
+    password: "",
+    phone: ""
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -30,14 +39,14 @@ const SignIn = () => {
   const handleRoleSelect = (r) => {
     setRole(r);
     setError("");
-    setForm({ username: "", password: "" });
+    setForm({ fullName: "", email: "", username: "", password: "", phone: "" });
     setSellerMode("signin");
   };
 
   const handleSellerMode = (mode) => {
     setSellerMode(mode);
     setError("");
-    setForm({ username: "", password: "" });
+    setForm({ fullName: "", email: "", username: "", password: "", phone: "" });
   };
 
   const handleSubmit = (e) => {
@@ -54,9 +63,16 @@ const SignIn = () => {
         setError("Invalid admin credentials.");
       }
     } else if (role === "seller") {
-      if (!form.username || !form.password) {
-        setError("Username and password required.");
-        return;
+      if (sellerMode === "register") {
+        if (!form.fullName || !form.email || !form.username || !form.password || !form.phone) {
+          setError("All fields are required.");
+          return;
+        }
+      } else {
+        if (!form.username || !form.password) {
+          setError("Username and password required.");
+          return;
+        }
       }
       const accounts = getSellerAccounts();
       if (sellerMode === "signin") {
@@ -76,7 +92,13 @@ const SignIn = () => {
         if (exists) {
           setError("Username already taken.");
         } else {
-          accounts.push({ username: form.username, password: form.password });
+          accounts.push({
+            fullName: form.fullName,
+            email: form.email,
+            username: form.username,
+            password: form.password,
+            phone: form.phone
+          });
           saveSellerAccounts(accounts);
           localStorage.setItem("isSeller", "true");
           localStorage.setItem("sellerUsername", form.username);
@@ -125,13 +147,13 @@ const SignIn = () => {
             <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
               <div className="flex justify-center gap-4 mb-6">
                 <button
-                  className={`px-4 py-2 rounded font-bold border ${role === "admin" ? "bg-[#3B1220] text-white" : "bg-gray-100 text-[#3B1220]"}`}
+                  className={`px-4 py-2 rounded font-bold border cursor-pointer ${role === "admin" ? "bg-[#3B1220] text-white" : "bg-gray-100 text-[#3B1220]"}`}
                   onClick={() => handleRoleSelect("admin")}
                 >
                   Admin
                 </button>
                 <button
-                  className={`px-4 py-2 rounded font-bold border ${role === "seller" ? "bg-[#3B1220] text-white" : "bg-gray-100 text-[#3B1220]"}`}
+                  className={`px-4 py-2 rounded font-bold border cursor-pointer ${role === "seller" ? "bg-[#3B1220] text-white" : "bg-gray-100 text-[#3B1220]"}`}
                   onClick={() => handleRoleSelect("seller")}
                 >
                   Seller
@@ -140,13 +162,13 @@ const SignIn = () => {
               {role === "seller" && (
                 <div className="flex justify-center gap-2 mb-4">
                   <button
-                    className={`px-3 py-1 rounded border font-semibold ${sellerMode === "signin" ? "bg-[#3B1220] text-white" : "bg-gray-100 text-[#3B1220]"}`}
+                    className={`px-3 py-1 rounded border font-semibold cursor-pointer ${sellerMode === "signin" ? "bg-[#3B1220] text-white" : "bg-gray-100 text-[#3B1220]"}`}
                     onClick={() => handleSellerMode("signin")}
                   >
                     Sign In
                   </button>
                   <button
-                    className={`px-3 py-1 rounded border font-semibold ${sellerMode === "register" ? "bg-[#3B1220] text-white" : "bg-gray-100 text-[#3B1220]"}`}
+                    className={`px-3 py-1 rounded border font-semibold cursor-pointer ${sellerMode === "register" ? "bg-[#3B1220] text-white" : "bg-gray-100 text-[#3B1220]"}`}
                     onClick={() => handleSellerMode("register")}
                   >
                     Register
@@ -155,6 +177,43 @@ const SignIn = () => {
               )}
               {role && (
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {role === "seller" && sellerMode === "register" && (
+                    <>
+                      <div>
+                        <label className="block font-semibold mb-1">Full Name</label>
+                        <input
+                          type="text"
+                          name="fullName"
+                          value={form.fullName}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#3B1220]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-semibold mb-1">Email Address</label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={form.email}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#3B1220]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-semibold mb-1">Phone Number</label>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={form.phone}
+                          onChange={handleChange}
+                          required
+                          className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#3B1220]"
+                        />
+                      </div>
+                    </>
+                  )}
                   <div>
                     <label className="block font-semibold mb-1">Username</label>
                     <input
@@ -220,6 +279,3 @@ const SignIn = () => {
 };
 
 export default SignIn;
-import React, { useState } from "react";
-import Navbar from "./Navbar";
-import { useNavigate } from "react-router-dom";
