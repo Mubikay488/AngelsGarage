@@ -88,15 +88,28 @@ const AdminPage = () => {
   const [form, setForm] = useState({
     name: "",
     price: "",
-    image: "",
+    carImages: [], // Array of Base64 strings
     description: "",
     brand: "",
     model: "",
     year: "",
+    imageFiles: []
   });
   const [error, setError] = useState("");
   const [pendingCars, setPendingCars] = useState(() => {
     return JSON.parse(localStorage.getItem('pendingCars') || '[]');
+  });
+  const [editCarId, setEditCarId] = useState(null);
+  const [editPending, setEditPending] = useState(false);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    price: "",
+    carImages: [],
+    description: "",
+    brand: "",
+    model: "",
+    year: "",
+    imageFiles: []
   });
   // Approve a pending car: move to cars list and remove from pending, update localStorage
   const handleApprove = (id) => {
@@ -129,20 +142,36 @@ const AdminPage = () => {
   }
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+    if (name === "imageFiles" && files && files.length > 0) {
+      const fileReaders = [];
+      let imagesArr = [];
+      for (let i = 0; i < files.length; i++) {
+        fileReaders[i] = new FileReader();
+        fileReaders[i].onloadend = () => {
+          imagesArr[i] = fileReaders[i].result;
+          if (imagesArr.filter(Boolean).length === files.length) {
+            setForm((prev) => ({ ...prev, carImages: imagesArr, imageFiles: imagesArr }));
+          }
+        };
+        fileReaders[i].readAsDataURL(files[i]);
+      }
+    } else {
+      setForm({ ...form, [name]: value });
+    }
   };
 
   const handleAddCar = (e) => {
     e.preventDefault();
-    if (!form.name || !form.price || !form.image) {
-      setError("Name, price, and image are required.");
+    if (!form.name || !form.price || !form.carImages || form.carImages.length === 0) {
+      setError("Name, price, and at least one image are required.");
       return;
     }
     setCars([
       ...cars,
       { ...form, id: Date.now() },
     ]);
-    setForm({ name: "", price: "", image: "", description: "", brand: "", model: "", year: "" });
+    setForm({ name: "", price: "", carImages: [], description: "", brand: "", model: "", year: "", imageFiles: [] });
     setError("");
   };
 
@@ -167,15 +196,46 @@ const AdminPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {pendingCars.map((car) => (
                 <div key={car.id} className="border rounded-lg p-4 flex flex-col">
-                  {car.image && <img src={car.image} alt={car.name} className="w-full h-40 object-cover rounded mb-2" />}
-                  <div className="font-bold text-lg">{car.name}</div>
-                  <div className="text-green-600 font-bold">{car.price}</div>
-                  <div className="text-gray-500 text-sm mb-2">{car.brand} {car.model} {car.year}</div>
-                  <div className="text-gray-700 text-sm mb-2">{car.description}</div>
-                  <div className="flex gap-2 mt-2">
-                    <button onClick={() => handleApprove(car.id)} className="bg-green-600 text-white rounded px-3 py-1 hover:bg-green-700">Approve</button>
-                    <button onClick={() => handleReject(car.id)} className="bg-red-500 text-white rounded px-3 py-1 hover:bg-red-600">Reject</button>
-                  </div>
+                  {editCarId === car.id && editPending ? (
+                    <form
+                      className="space-y-2 mb-2"
+                      onSubmit={e => {
+                        e.preventDefault();
+                        const updatedPending = pendingCars.map(c =>
+                          c.id === car.id ? { ...c, ...editForm } : c
+                        );
+                        setPendingCars(updatedPending);
+                        localStorage.setItem('pendingCars', JSON.stringify(updatedPending));
+                        setEditCarId(null);
+                        setEditPending(false);
+                      }}
+                    >
+                      <input name="name" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Car Name" />
+                      <input name="price" value={editForm.price} onChange={e => setEditForm({ ...editForm, price: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Price" />
+                      <input name="image" value={editForm.image} onChange={e => setEditForm({ ...editForm, image: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Image URL" />
+                      <input name="brand" value={editForm.brand} onChange={e => setEditForm({ ...editForm, brand: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Brand" />
+                      <input name="model" value={editForm.model} onChange={e => setEditForm({ ...editForm, model: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Model" />
+                      <input name="year" value={editForm.year} onChange={e => setEditForm({ ...editForm, year: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Year" />
+                      <textarea name="description" value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Description" />
+                      <div className="flex gap-2 mt-2">
+                        <button type="submit" className="bg-green-600 text-white rounded px-3 py-1">Save</button>
+                        <button type="button" className="bg-gray-400 text-white rounded px-3 py-1" onClick={() => { setEditCarId(null); setEditPending(false); }}>Cancel</button>
+                      </div>
+                    </form>
+                  ) : (
+                    <>
+                      {car.image && <img src={car.image} alt={car.name} className="w-full h-40 object-cover rounded mb-2" />}
+                      <div className="font-bold text-lg">{car.name}</div>
+                      <div className="text-green-600 font-bold">{car.price}</div>
+                      <div className="text-gray-500 text-sm mb-2">{car.brand} {car.model} {car.year}</div>
+                      <div className="text-gray-700 text-sm mb-2">{car.description}</div>
+                      <div className="flex gap-2 mt-2">
+                        <button onClick={() => handleApprove(car.id)} className="bg-green-600 text-white rounded px-3 py-1 hover:bg-green-700">Approve</button>
+                        <button onClick={() => handleReject(car.id)} className="bg-red-500 text-white rounded px-3 py-1 hover:bg-red-600">Reject</button>
+                        <button onClick={() => { setEditCarId(car.id); setEditPending(true); setEditForm(car); }} className="bg-blue-500 text-white rounded px-3 py-1 hover:bg-blue-600">Edit</button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
@@ -188,11 +248,18 @@ const AdminPage = () => {
           <div className="grid grid-cols-1 gap-4">
             <input name="name" value={form.name} onChange={handleChange} placeholder="Car Name" className="border rounded-lg px-3 py-2" />
             <input name="price" value={form.price} onChange={handleChange} placeholder="Price" className="border rounded-lg px-3 py-2" />
-            <input name="image" value={form.image} onChange={handleChange} placeholder="Image URL" className="border rounded-lg px-3 py-2" />
             <input name="brand" value={form.brand} onChange={handleChange} placeholder="Brand" className="border rounded-lg px-3 py-2" />
             <input name="model" value={form.model} onChange={handleChange} placeholder="Model" className="border rounded-lg px-3 py-2" />
             <input name="year" value={form.year} onChange={handleChange} placeholder="Year" className="border rounded-lg px-3 py-2" />
             <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="border rounded-lg px-3 py-2" />
+            <input type="file" name="imageFiles" accept="image/*" multiple onChange={handleChange} className="border rounded-lg px-3 py-2" />
+            {form.carImages && form.carImages.length > 0 && (
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                {form.carImages.map((img, idx) => (
+                  <img key={idx} src={img} alt={`Car Preview ${idx + 1}`} className="w-full h-32 object-cover rounded" />
+                ))}
+              </div>
+            )}
             <button type="submit" className="bg-[#3B1220] text-white rounded-lg px-4 py-2 font-bold hover:opacity-90">Add Car</button>
           </div>
         </form>
@@ -205,12 +272,75 @@ const AdminPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {cars.map((car) => (
                 <div key={car.id} className="border rounded-lg p-4 flex flex-col">
-                  <img src={car.image} alt={car.name} className="w-full h-40 object-cover rounded mb-2" />
-                  <div className="font-bold text-lg">{car.name}</div>
-                  <div className="text-green-600 font-bold">{car.price}</div>
-                  <div className="text-gray-500 text-sm mb-2">{car.brand} {car.model} {car.year}</div>
-                  <div className="text-gray-700 text-sm mb-2">{car.description}</div>
-                  <button onClick={() => handleDelete(car.id)} className="bg-red-500 text-white rounded px-3 py-1 mt-auto self-end hover:bg-red-600">Remove from Buy Page</button>
+                  {editCarId === car.id && !editPending ? (
+                    <form
+                      className="space-y-2 mb-2"
+                      onSubmit={e => {
+                        e.preventDefault();
+                        const updatedCars = cars.map(c =>
+                          c.id === car.id ? { ...c, ...editForm } : c
+                        );
+                        setCars(updatedCars);
+                        localStorage.setItem('approvedCars', JSON.stringify(updatedCars));
+                        setEditCarId(null);
+                      }}
+                    >
+                      <input name="name" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Car Name" />
+                      <input name="price" value={editForm.price} onChange={e => setEditForm({ ...editForm, price: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Price" />
+                      <input type="file" name="imageFiles" accept="image/*" multiple onChange={e => {
+                        const files = e.target.files;
+                        if (files && files.length > 0) {
+                          const fileReaders = [];
+                          let imagesArr = [];
+                          for (let i = 0; i < files.length; i++) {
+                            fileReaders[i] = new FileReader();
+                            fileReaders[i].onloadend = () => {
+                              imagesArr[i] = fileReaders[i].result;
+                              if (imagesArr.filter(Boolean).length === files.length) {
+                                setEditForm((prev) => ({ ...prev, carImages: imagesArr, imageFiles: imagesArr }));
+                              }
+                            };
+                            fileReaders[i].readAsDataURL(files[i]);
+                          }
+                        }
+                      }} className="border rounded px-2 py-1 w-full" />
+                      {editForm.carImages && editForm.carImages.length > 0 && (
+                        <div className="mt-2 grid grid-cols-2 gap-2">
+                          {editForm.carImages.map((img, idx) => (
+                            <img key={idx} src={img} alt={`Car Preview ${idx + 1}`} className="w-full h-32 object-cover rounded" />
+                          ))}
+                        </div>
+                      )}
+                      <input name="brand" value={editForm.brand} onChange={e => setEditForm({ ...editForm, brand: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Brand" />
+                      <input name="model" value={editForm.model} onChange={e => setEditForm({ ...editForm, model: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Model" />
+                      <input name="year" value={editForm.year} onChange={e => setEditForm({ ...editForm, year: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Year" />
+                      <textarea name="description" value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} className="border rounded px-2 py-1 w-full" placeholder="Description" />
+                      <div className="flex gap-2 mt-2">
+                        <button type="submit" className="bg-green-600 text-white rounded px-3 py-1">Save</button>
+                        <button type="button" className="bg-gray-400 text-white rounded px-3 py-1" onClick={() => setEditCarId(null)}>Cancel</button>
+                      </div>
+                    </form>
+                  ) : (
+                    <>
+                      {car.carImages && car.carImages.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-2 mb-2">
+                          {car.carImages.map((img, idx) => (
+                            <img key={idx} src={img} alt={`Car Preview ${idx + 1}`} className="w-full h-40 object-cover rounded" />
+                          ))}
+                        </div>
+                      ) : (
+                        <img src={car.image} alt={car.name} className="w-full h-40 object-cover rounded mb-2" />
+                      )}
+                      <div className="font-bold text-lg">{car.name}</div>
+                      <div className="text-green-600 font-bold">{car.price}</div>
+                      <div className="text-gray-500 text-sm mb-2">{car.brand} {car.model} {car.year}</div>
+                      <div className="text-gray-700 text-sm mb-2">{car.description}</div>
+                      <div className="flex gap-2 mt-2">
+                        <button onClick={() => handleDelete(car.id)} className="bg-red-500 text-white rounded px-3 py-1 hover:bg-red-600">Remove from Buy Page</button>
+                        <button onClick={() => { setEditCarId(car.id); setEditPending(false); setEditForm(car); }} className="bg-blue-500 text-white rounded px-3 py-1 hover:bg-blue-600">Edit</button>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
