@@ -16,7 +16,6 @@ const SignIn = () => {
     username: "",
     password: "",
     phone: "",
-    carImages: [] // Array of Base64 strings
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -34,37 +33,21 @@ const SignIn = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "carImages" && files && files.length > 0) {
-      const fileReaders = [];
-      let imagesArr = [];
-      for (let i = 0; i < files.length; i++) {
-        fileReaders[i] = new FileReader();
-        fileReaders[i].onloadend = () => {
-          imagesArr[i] = fileReaders[i].result;
-          // Only update state when all files are read
-          if (imagesArr.filter(Boolean).length === files.length) {
-            setForm((prev) => ({ ...prev, carImages: imagesArr }));
-          }
-        };
-        fileReaders[i].readAsDataURL(files[i]);
-      }
-    } else {
-      setForm({ ...form, [name]: value });
-    }
+  const { name, value } = e.target;
+  setForm({ ...form, [name]: value });
   };
 
   const handleRoleSelect = (r) => {
     setRole(r);
     setError("");
-    setForm({ fullName: "", email: "", username: "", password: "", phone: "", carImages: [] });
+  setForm({ fullName: "", email: "", username: "", password: "", phone: "" });
     setSellerMode("signin");
   };
 
   const handleSellerMode = (mode) => {
     setSellerMode(mode);
     setError("");
-    setForm({ fullName: "", email: "", username: "", password: "", phone: "", carImages: [] });
+  setForm({ fullName: "", email: "", username: "", password: "", phone: "" });
   };
 
   const handleSubmit = (e) => {
@@ -82,8 +65,8 @@ const SignIn = () => {
       }
     } else if (role === "seller") {
       if (sellerMode === "register") {
-        if (!form.fullName || !form.email || !form.username || !form.password || !form.phone || !form.carImages || form.carImages.length === 0) {
-          setError("All fields including at least one car image are required.");
+        if (!form.fullName || !form.email || !form.username || !form.password || !form.phone) {
+          setError("All fields are required.");
           return;
         }
       } else {
@@ -115,8 +98,7 @@ const SignIn = () => {
             email: form.email,
             username: form.username,
             password: form.password,
-            phone: form.phone,
-            carImages: form.carImages // Array of images
+            phone: form.phone
           });
           saveSellerAccounts(accounts);
           localStorage.setItem("isSeller", "true");
@@ -140,7 +122,7 @@ const SignIn = () => {
     navigate("/signin");
     setRole("");
     setSellerMode("signin");
-    setForm({ username: "", password: "", carImages: [] });
+  setForm({ username: "", password: "" });
     setError("");
   };
 
@@ -232,23 +214,6 @@ const SignIn = () => {
                         />
                       </div>
                   <div>
-                    <label className="block font-semibold mb-1">Car Images</label>
-                    <input
-                      type="file"
-                      name="carImages"
-                      accept="image/*"
-                      multiple
-                      onChange={handleChange}
-                      required
-                      className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-[#3B1220]"
-                    />
-                    {form.carImages && form.carImages.length > 0 && (
-                      <div className="mt-2 grid grid-cols-2 gap-2">
-                        {form.carImages.map((img, idx) => (
-                          <img key={idx} src={img} alt={`Car Preview ${idx + 1}`} className="w-full h-32 object-cover rounded" />
-                        ))}
-                      </div>
-                    )}
                   </div>
                     </>
                   )}

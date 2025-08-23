@@ -7,7 +7,8 @@ const SellForm = () => {
     brand: "",
     model: "",
     year: "",
-    price: "",
+  priceAmount: "",
+  priceCurrency: "GHS",
     description: "",
     image: null,
   });
@@ -28,14 +29,32 @@ const SellForm = () => {
     e.preventDefault();
     // Save to localStorage for admin review
     const pendingCars = JSON.parse(localStorage.getItem('pendingCars') || '[]');
-    const carData = {
-      ...form,
-      id: Date.now(),
-      image: form.image ? URL.createObjectURL(form.image) : null,
+
+    const saveCar = (imageDataUrl) => {
+      const amount = parseFloat(form.priceAmount || 0).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 2});
+      const priceStr = form.priceCurrency === 'USD' ? `$${amount}` : `GH₵${amount}`;
+      const carData = {
+        ...form,
+        price: priceStr,
+        id: Date.now(),
+        image: imageDataUrl || null,
+      };
+      pendingCars.push(carData);
+      localStorage.setItem('pendingCars', JSON.stringify(pendingCars));
+      setSubmitted(true);
     };
-    pendingCars.push(carData);
-    localStorage.setItem('pendingCars', JSON.stringify(pendingCars));
-    setSubmitted(true);
+
+    // If an image File is present, convert to Base64 Data URL so it persists
+    if (form.image && form.image instanceof File) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        saveCar(reader.result);
+      };
+      reader.readAsDataURL(form.image);
+    } else {
+      // already a data URL or null
+      saveCar(form.image);
+    }
   };
 
   return (
@@ -99,17 +118,33 @@ const SellForm = () => {
                     className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-amber-800"
                   />
                 </div>
-                <div>
-                  <label className="block font-semibold mb-1">Price (GH₵)</label>
+              <div className="grid grid-cols-3 gap-2 items-center">
+                <div className="col-span-1">
+                  <label className="block font-semibold mb-1">Currency</label>
+                  <select
+                    name="priceCurrency"
+                    value={form.priceCurrency}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-amber-800"
+                  >
+                    <option value="GHS">GH₵ (Cedis)</option>
+                    <option value="USD">$ (USD)</option>
+                  </select>
+                </div>
+                <div className="col-span-2">
+                  <label className="block font-semibold mb-1">Amount</label>
                   <input
-                    type="text"
-                    name="price"
-                    value={form.price}
+                    type="number"
+                    name="priceAmount"
+                    value={form.priceAmount}
                     onChange={handleChange}
                     required
+                    min="0"
+                    step="0.01"
                     className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-amber-800"
                   />
                 </div>
+              </div>
               </div>
               <div>
                 <label className="block font-semibold mb-1">Description</label>
