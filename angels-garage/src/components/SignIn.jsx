@@ -264,9 +264,9 @@ const SignIn = () => {
               )}
             </div>
             <div className="mt-6 text-center text-gray-500 text-sm">
-              {/* {role === "admin" && (
-                // <span>Admin credentials: <span className="font-bold">Mubarak / Mubikay488</span></span>
-              )} */}
+               {role === "admin" && (
+                 <span>Admin credentials: <span className="font-bold">Mubarak / Mubikay488</span></span>
+              )} 
               {role === "seller" && sellerMode === "register" && (
                 <span>Register as a seller with a unique username and password.</span>
               )}
